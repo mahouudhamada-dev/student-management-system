@@ -97,10 +97,9 @@ void  DeleteStudent()
                 students[j].ages= students[j+1].ages;
                 students[j].ids= students[j+1].ids;
                 students[j].gpas= students[j+1].gpas;*/
-                found = true;
             }
-            students.pop_back();
-
+			students.pop_back();// حذف آخر عنصر من المصفوفة بعد نقل العناصر
+			saveToFile();// حفظ البيانات في ملف  بعد حذف الطالب
             break;
         }
     }
