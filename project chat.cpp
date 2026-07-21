@@ -19,9 +19,9 @@ void saveToFile()
     ofstream outfile("students.txt");
     for (int i = 0;i < students.size();i++)
     {
-        outfile << students[i].name << " "
-            << students[i].age << " "
-            << students[i].id << " "
+        outfile << students[i].name << "|"
+            << students[i].age << "|"
+            << students[i].id << "|"
             << students[i].gpa << "\n";//اضافه العناصر للمصفوفه علي سطر واحد
     }
     outfile.close();// قفل الملف بعد الانتهاء
@@ -29,14 +29,19 @@ void saveToFile()
 //int studentcount=0;
 void loadFromFile()
 {
-    ifstream infile("students.txt");
+
+   ifstream infile("students.txt");
     if (!infile)
     {
         return;
     }
     Student temp;
-    while (infile >> temp.name >> temp.age >> temp.id >> temp.gpa)
+	string age, id, gpa;
+    while (getline(infile, temp.name, '|') && getline(infile, age, '|') && getline(infile, id, '|') && getline(infile, gpa))
     {
+		temp.age = stoi(age);// تحويل النص إلى عدد صحيح
+		temp.id = stoi(id);// تحويل النص إلى عدد صحيح
+		temp.gpa = stof(gpa);// تحويل النص إلى عدد عشري
         students.push_back(temp);//اضافة العناصر للمصفوفه
     }
     infile.close();// قفل الملف بعد الانتهاء
@@ -53,7 +58,9 @@ void addStudent()
     }*/
     Student newStudent ;
     cout <<"name: ";
-    cin>> newStudent.name;
+	cin.ignore();//لتجنب مشكلة قراءة الاسم بعد المسافات
+    getline(cin, newStudent.name);
+    //cin>> newStudent.name;
     cout <<"age: ";
     cin>> newStudent.age;
     cout<<"id: ";
@@ -61,9 +68,25 @@ void addStudent()
     cout<<"gpa: ";
     cin>> newStudent.gpa;
    /* studentcount++;*/
-	students.push_back(newStudent);//اضافة الطالب إلى المصفوفة
-   saveToFile();// حفظ البيانات في ملف  بعد إضافة الطالب
-    cout<<"Student Added Successfully\n";
+	bool found = false;
+	for(int i=0;i<students.size();i++)
+    {
+        if(students[i].id==newStudent.id)
+        {
+			found = true;
+            break;
+        }
+    }
+    if(found)
+    {
+        cout << "ID alreadr exists!\n";
+    }
+    else
+    {
+        students.push_back(newStudent);//اضافة الطالب إلى المصفوفة
+        saveToFile();// حفظ البيانات في ملف  بعد إضافة الطالب
+        cout << "Student Added Successfully\n";
+    }
 }
 
 void showStudent()
@@ -159,7 +182,9 @@ void updateStudent()
 	    if(searchID == students[i].id)
         {
 			cout << "ENTER NEW NAME: ";
-			cin >> students[i].name;
+			cin.ignore();
+			getline(cin, students[i].name);
+			//cin >> students[i].name;
 			cout << "ENTER NEW AGE: ";
 			cin >> students[i].age;
 			cout << "ENTER NEW GPA: ";
